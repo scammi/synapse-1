@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
+import { api } from "@/trpc/react";
 
 type BriefData = {
   title: string
@@ -22,6 +23,9 @@ type BriefData = {
   screeningQuestions: string[]
   deliverables: string[]
   workSamples: string[]
+  targetAudience: string
+  budget: string
+  deadline: string
 }
 
 const availableSkills = [
@@ -49,9 +53,12 @@ export default function MarketingBriefForm() {
     pricingModel: 'flexible',
     budgetFrom: '',
     budgetTo: '',
+    budget: '',
     screeningQuestions: [...defaultScreeningQuestions],
     deliverables: ['', '', ''],
-    workSamples: []
+    workSamples: [],
+    targetAudience: '',
+    deadline: '',
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -84,24 +91,49 @@ export default function MarketingBriefForm() {
   const handleNext = () => setStep(prev => Math.min(prev + 1, 5))
   const handleBack = () => setStep(prev => Math.max(prev - 1, 0))
 
-  const handleSubmit = () => {
+
+  const createBrief =  api.brief.create.useMutation();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     console.log('Submitting brief:', briefData)
+
+    const budget = briefData.budgetFrom && briefData.budgetTo
+      ? (Number(briefData.budgetFrom) + Number(briefData.budgetTo)) / 2
+      : undefined;
+
+    // Prepare the input for the create mutation
+    const input = {
+      // ...briefData,
+      title: briefData.title,
+      description: briefData.description,
+      targetAudience: '',
+      budget: Number(budget),
+      // deadline: (new Date()).toString(), // Add a deadline field to your form if needed
+      deadline: new Date(), // Add a deadline field to your form if needed
+    };
+
     // Reset form or navigate away
-    setStep(0)
-    setBriefData({
-      title: '',
-      description: '',
-      skills: [],
-      projectSize: '',
-      projectDuration: '',
-      skillLevel: '',
-      pricingModel: 'flexible',
-      budgetFrom: '',
-      budgetTo: '',
-      screeningQuestions: [...defaultScreeningQuestions],
-      deliverables: ['', '', ''],
-      workSamples: []
-    })
+    // setStep(0)
+    createBrief.mutate(input)
+
+    // setBriefData({
+    //   title: '',
+    //   description: '',
+    //   skills: [],
+    //   projectSize: '',
+    //   projectDuration: '',
+    //   skillLevel: '',
+    //   pricingModel: 'flexible',
+    //   budgetFrom: '',
+    //   budgetTo: '',
+    //   screeningQuestions: [...defaultScreeningQuestions],
+    //   deliverables: ['', '', ''],
+    //   workSamples: [],
+    //   targetAudience: '',
+    //   budget: '',
+    //   deadline: '',
+    // });
   }
 
   const renderStep = () => {
