@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  decimal,
   index,
   integer,
   pgTableCreator,
@@ -128,3 +129,37 @@ export const verificationTokens = createTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   })
 );
+
+export const briefs = createTable(
+  "brief",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title", { length: 256 }).notNull(),
+    description: text("description").notNull(),
+    targetAudience: varchar("target_audience", { length: 256 }),
+    budget: decimal("budget", { precision: 10, scale: 2 }),
+    deadline: timestamp("deadline", { withTimezone: true }),
+    createdById: varchar("created_by", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date()
+    ),
+  },
+  (brief) => ({
+    createdByIdIdx: index("brief_created_by_idx").on(brief.createdById),
+    titleIndex: index("brief_title_idx").on(brief.title),
+  })
+);
+
+export const briefsRelations = relations(briefs, ({ one }) => ({
+  createdBy: one(users, {
+    fields: [briefs.createdById],
+    references: [users.id],
+  }),
+}));
+
+
