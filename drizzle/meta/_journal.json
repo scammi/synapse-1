@@ -8,6 +8,48 @@
       "when": 1728293118462,
       "tag": "0000_outgoing_thanos",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1728315124059,
+      "tag": "0001_clean_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1728317098111,
+      "tag": "0002_bizarre_toxin",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1728317360043,
+      "tag": "0003_fantastic_peter_quill",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1728317380217,
+      "tag": "0004_overconfident_wonder_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1728317597658,
+      "tag": "0005_dazzling_mystique",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1728317775879,
+      "tag": "0006_normal_puma",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
-  decimal,
+  date,
   index,
   integer,
   pgTableCreator,
@@ -131,35 +131,25 @@ export const verificationTokens = createTable(
 );
 
 export const briefs = createTable(
-  "brief",
+  "briefs",
   {
     id: serial("id").primaryKey(),
     title: varchar("title", { length: 256 }).notNull(),
     description: text("description").notNull(),
     targetAudience: varchar("target_audience", { length: 256 }),
-    budget: decimal("budget", { precision: 10, scale: 2 }),
-    deadline: timestamp("deadline", { withTimezone: true }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
+    budget: integer("budget"),
+    deadline: date("deadline"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    createdById: varchar("created_by", { length: 255 })
+      .notNull()
+      .references(() => users.id),
   },
-  (brief) => ({
-    createdByIdIdx: index("brief_created_by_idx").on(brief.createdById),
-    titleIndex: index("brief_title_idx").on(brief.title),
+  (project) => ({
+    titleIdx: index("project_title_idx").on(project.title),
   })
 );
-
-export const briefsRelations = relations(briefs, ({ one }) => ({
-  createdBy: one(users, {
-    fields: [briefs.createdById],
-    references: [users.id],
-  }),
-}));
-
-

@@ -1,0 +1,1 @@
+ALTER TABLE "synapse_brief" ALTER COLUMN "title" SET DATA TYPE varchar;
