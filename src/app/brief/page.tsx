@@ -145,8 +145,8 @@ export default function MarketingBriefForm() {
               <CardTitle>Welcome!</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-lg">Let's get you set up with your first marketing brief and share it with the global Myosin network.</p>
-              <p className="mt-4 text-lg">We just have a few questions, and we'll get you all set up. Ready to get started?</p>
+            <p className="text-lg">Let&apos;s get you set up with your first marketing brief and share it with the global Myosin network.</p>
+            <p className="mt-4 text-lg">We just have a few questions, and we'll get you all set up. Ready to get started?</p>
             </CardContent>
             <CardFooter>
               <Button onClick={handleNext} size="lg" className="mt-4">Let's Go</Button>
@@ -370,7 +370,7 @@ export default function MarketingBriefForm() {
                 <p className="text-sm text-muted-foreground mb-2">Add custom questions or stick with the default questions, up to five total.</p>
                 {briefData.screeningQuestions.map((question, index) => (
                   <div key={index} className="flex items-center space-x-2 mb-2">
-                    <Checkbox checked={true} onCheckedChange={() => {}} />
+                    <Checkbox checked={true} onCheckedChange={() => { console.log('hey bro') }} />
                     <Label>{question}</Label>
                   </div>
                 ))}
@@ -393,7 +393,7 @@ export default function MarketingBriefForm() {
                 <Label className="text-lg font-semibold">Please share any relevant work samples as links or attachments.</Label>
                 <Input
                   placeholder="https://www.examplelink.com"
-                  value={briefData.workSamples[briefData.workSamples.length - 1] || ''}
+                  value={briefData.workSamples[briefData.workSamples.length - 1] ?? ''}
                   onChange={(e) => handleWorkSampleAdd(e.target.value)}
                   className="mb-2"
                 />
