@@ -60,25 +60,6 @@ export const briefRouter = createTRPCRouter({
       return result;
     }),
 
-  update: protectedProcedure
-    .input(z.object({
-      id: z.number().int(),
-      title: z.string().min(1).max(256).optional(),
-      description: z.string().min(1).optional(),
-      targetAudience: z.string().max(256).optional(),
-      budget: z.number().int().positive().optional(),
-      deadline: z.date().optional(),
-    }))
-    .mutation(async ({ ctx, input }) => {
-      const { id, ...updateData } = input;
-      const [result] = await ctx.db.update(briefs)
-        .set({ ...updateData, updatedAt: new Date() })
-        .where(eq(briefs.id, id))
-        .returning();
-      if (!result) throw new Error("Brief not found");
-      return result;
-    }),
-
   delete: protectedProcedure
     .input(z.object({ id: z.number().int() }))
     .mutation(async ({ ctx, input }) => {
@@ -87,33 +68,4 @@ export const briefRouter = createTRPCRouter({
       return { success: true, deletedBrief: result };
     }),
 
-  getByUser: protectedProcedure
-    .input(z.object({
-      limit: z.number().int().min(1).max(100).optional().default(50),
-      cursor: z.number().int().optional(),
-    }))
-    .query(async ({ ctx, input }) => {
-      const { limit, cursor } = input;
-      const query = ctx.db.select()
-        .from(briefs)
-        .where(eq(briefs.createdById, ctx.session.user.id))
-        .orderBy(desc(briefs.createdAt))
-        .limit(limit + 1);
-      
-      if (cursor) {
-        query.where(eq(briefs.id, cursor));
-      }
-
-      const items = await query;
-      let nextCursor: typeof cursor | undefined = undefined;
-      if (items.length > limit) {
-        const nextItem = items.pop();
-        nextCursor = nextItem?.id;
-      }
-
-      return {
-        items,
-        nextCursor,
-      };
-    }),
 });
